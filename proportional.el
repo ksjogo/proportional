@@ -29,29 +29,32 @@
   :group 'environment)
 
 (defcustom proportional-font
-  "DejaVu Sans"
+  "DejaVu Sans-10"
   "Default proportional-font to activate."
   :group 'proportional
   :type 'string)
 
 (defcustom proportional-monospace-font
-  "DejaVu Sans Mono"
+  "DejaVu Sans Mono-10"
   "Default proportional-font to activate."
   :group 'proportional
   :type 'string)
 
+(defun proportional-family (font)
+  (replace-regexp-in-string "-.*" "" font))
+
 (defun proportional-use-monospace ()
   (interactive)
   "Switch the current buffer to a monospace font."
-  (face-remap-add-relative 'header-line `(:family ,proportional-monospace-font))
-  (face-remap-add-relative 'mode-line `(:family ,proportional-monospace-font))
-  (face-remap-add-relative 'default `(:family ,proportional-monospace-font)))
+  (face-remap-add-relative 'header-line :family (proportional-family proportional-monospace-font))
+  (face-remap-add-relative 'mode-line :family (proportional-family proportional-monospace-font))
+  (face-remap-add-relative 'default :family (proportional-family proportional-monospace-font)))
 
 ;;;###autoload
 (define-minor-mode proportional-mode "" :global t
   (if proportional-mode
       (progn
-        (add-to-list 'default-frame-alist `(font . ,proportional-font))
+        (add-to-list 'default-frame-alist (cons 'font proportional-font))
         (set-frame-font proportional-font)
         (set-fontset-font "fontset-default" 'symbol proportional-font)
         (setq variable-pitch `((t :family ,proportional-font)))
@@ -64,7 +67,7 @@
         (add-hook 'which-key-init-buffer-hook 'proportional-use-monospace)
         (add-hook 'mu4e-headers-mode-hook 'proportional-use-monospace))
     (progn
-      (add-to-list 'default-frame-alist `(font . ,proportional-monospace-font))
+      (add-to-list 'default-frame-alist (cons 'font proportional-monospace-font))
       (set-frame-font proportional-monospace-font)
       (set-fontset-font "fontset-default" 'symbol proportional-monospace-font)
       (setq variable-pitch `((t :family ,proportional-monospace-font)))
