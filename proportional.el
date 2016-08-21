@@ -29,13 +29,13 @@
   :group 'environment)
 
 (defcustom proportional-font
-  "DejaVu Sans-10"
+  "DejaVu Sans-11"
   "Default proportional-font to activate."
   :group 'proportional
   :type 'string)
 
 (defcustom proportional-monospace-font
-  "DejaVu Sans Mono-10"
+  "DejaVu Sans Mono-11"
   "Default proportional-font to activate."
   :group 'proportional
   :type 'string)
