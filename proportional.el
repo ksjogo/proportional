@@ -3,7 +3,7 @@
 ;; Author: Johannes Goslar
 ;; Created: 30 June 2016
 ;; Version: 0.1.0
-;; Package-Requires: ((emacs "24.4")(use-package))
+;; Package-Requires: ((emacs "24.4") (use-package))
 ;; Keywords: font
 ;; URL: https://github.com/ksjogo/proportional
 
@@ -58,6 +58,7 @@
         (set-frame-font proportional-font)
         (set-fontset-font "fontset-default" 'symbol proportional-font)
         (setq variable-pitch `((t :family ,proportional-font)))
+        (ad-enable-advice 'lv-message 'after 'proportional)
         (add-hook 'dired-mode-hook 'proportional-use-monospace)
         (add-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
         (add-hook 'tabulated-list-mode 'proportional-use-monospace)
@@ -71,6 +72,7 @@
       (set-frame-font proportional-monospace-font)
       (set-fontset-font "fontset-default" 'symbol proportional-monospace-font)
       (setq variable-pitch `((t :family ,proportional-monospace-font)))
+      (ad-disable-advice 'lv-message 'after 'lv-message-proportional)
       (remove-hook 'dired-mode-hook 'proportional-use-monospace)
       (remove-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
       (remove-hook 'tabulated-list-mode 'proportional-use-monospace)
@@ -87,6 +89,16 @@
     (which-key--init-buffer)
     (with-current-buffer which-key--buffer
       (proportional-use-monospace))))
+
+(use-package hydra
+  :defer t
+  :config
+  (defadvice lv-message (after proportional)
+    (with-current-buffer (get-buffer " *LV*")
+      (buffer-face-mode t)
+      (proportional-use-monospace)))
+  (when proportional-mode
+    (ad-enable-advice 'lv-message 'after 'proportional)))
 
 (provide 'proportional)
 ;;; proportional.el ends here
