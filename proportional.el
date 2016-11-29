@@ -57,7 +57,7 @@
         (add-to-list 'default-frame-alist (cons 'font proportional-font))
         (set-frame-font proportional-font)
         (set-fontset-font "fontset-default" 'symbol proportional-font)
-        (setq variable-pitch `((t :family ,proportional-font)))
+        (set-face-font 'variable-pitch proportional-font)
         (ad-enable-advice 'lv-message 'after 'proportional)
         (add-hook 'dired-mode-hook 'proportional-use-monospace)
         (add-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
@@ -71,7 +71,7 @@
       (add-to-list 'default-frame-alist (cons 'font proportional-monospace-font))
       (set-frame-font proportional-monospace-font)
       (set-fontset-font "fontset-default" 'symbol proportional-monospace-font)
-      (setq variable-pitch `((t :family ,proportional-monospace-font)))
+      (set-face-font 'variable-pitch proportional-monospace-font)
       (ad-disable-advice 'lv-message 'after 'proportional)
       (remove-hook 'dired-mode-hook 'proportional-use-monospace)
       (remove-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
@@ -81,6 +81,9 @@
       (remove-hook 'magit-log-mode-hook 'proportional-use-monospace)
       (remove-hook 'which-key-init-buffer-hook 'proportional-use-monospace)
       (remove-hook 'mu4e-headers-mode-hook 'proportional-use-monospace))))
+
+(eval-when-compile
+  (require 'use-package))
 
 (use-package which-key
   :defer t
