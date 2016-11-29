@@ -72,7 +72,7 @@
       (set-frame-font proportional-monospace-font)
       (set-fontset-font "fontset-default" 'symbol proportional-monospace-font)
       (setq variable-pitch `((t :family ,proportional-monospace-font)))
-      (ad-disable-advice 'lv-message 'after 'lv-message-proportional)
+      (ad-disable-advice 'lv-message 'after 'proportional)
       (remove-hook 'dired-mode-hook 'proportional-use-monospace)
       (remove-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
       (remove-hook 'tabulated-list-mode 'proportional-use-monospace)
