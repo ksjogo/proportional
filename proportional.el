@@ -40,6 +40,26 @@
   :group 'proportional
   :type 'string)
 
+(defcustom proportional-monospace-hooks
+  '(dired-mode-hook
+    spacemacs-buffer-mode-hook
+    tabulated-list-mode
+    package-menu-mode-hook
+    magit-popup-mode-hook
+    magit-log-mode-hook
+    which-key-init-buffer-hook
+    mu4e-headers-mode-hook)
+  "The list of hooks which shall be monospaced even when proportional mode is on."
+  :group 'proportional
+  :type '(repeat symbol))
+
+(defcustom proportional-monospace-after-advices
+  '(lv-message)
+  "The list of functions which have an advice named `proportional',
+which then is enabled when proportional is enabled."
+  :group 'proportional
+  :type '(repeat symbol))
+
 (defun proportional-family (font)
   (replace-regexp-in-string "-.*" "" font))
 
@@ -58,34 +78,31 @@
         (set-frame-font proportional-font)
         (set-fontset-font "fontset-default" 'symbol proportional-font)
         (set-face-font 'variable-pitch proportional-font)
-        (ad-enable-advice 'lv-message 'after 'proportional)
-        (add-hook 'dired-mode-hook 'proportional-use-monospace)
-        (add-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
-        (add-hook 'tabulated-list-mode 'proportional-use-monospace)
-        (add-hook 'package-menu-mode-hook 'proportional-use-monospace)
-        (add-hook 'magit-popup-mode-hook 'proportional-use-monospace)
-        (add-hook 'magit-log-mode-hook 'proportional-use-monospace)
-        (add-hook 'which-key-init-buffer-hook 'proportional-use-monospace)
-        (add-hook 'mu4e-headers-mode-hook 'proportional-use-monospace))
+
+        (dolist (base proportional-monospace-after-advices)
+          (ad-enable-advice base 'after 'proportional))
+
+        (dolist (hook proportional-monospace-hooks)
+          (add-hook hook 'proportional-use-monospace)))
+
     (progn
       (add-to-list 'default-frame-alist (cons 'font proportional-monospace-font))
       (set-frame-font proportional-monospace-font)
       (set-fontset-font "fontset-default" 'symbol proportional-monospace-font)
       (set-face-font 'variable-pitch proportional-monospace-font)
-      (ad-disable-advice 'lv-message 'after 'proportional)
-      (remove-hook 'dired-mode-hook 'proportional-use-monospace)
-      (remove-hook 'spacemacs-buffer-mode-hook 'proportional-use-monospace)
-      (remove-hook 'tabulated-list-mode 'proportional-use-monospace)
-      (remove-hook 'package-menu-mode-hook 'proportional-use-monospace)
-      (remove-hook 'magit-popup-mode-hook 'proportional-use-monospace)
-      (remove-hook 'magit-log-mode-hook 'proportional-use-monospace)
-      (remove-hook 'which-key-init-buffer-hook 'proportional-use-monospace)
-      (remove-hook 'mu4e-headers-mode-hook 'proportional-use-monospace))))
+
+      (dolist (base proportional-monospace-after-advices)
+        (ad-disable-advice base 'after 'proportional))
+
+      (dolist (hook proportional-monospace-hooks)
+        (remove-hook hook 'proportional-use-monospace)))))
 
 (eval-when-compile
   (require 'use-package))
+(require 'use-package)
 
 (use-package which-key
+  :if (package-installed-p 'which-key)
   :defer t
   :config
   (progn
@@ -94,6 +111,7 @@
       (proportional-use-monospace))))
 
 (use-package hydra
+  :if (package-installed-p 'hydra)
   :defer t
   :config
   (defadvice lv-message (after proportional)
