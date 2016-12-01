@@ -79,6 +79,8 @@ which then is enabled when proportional is enabled."
         (set-fontset-font "fontset-default" 'symbol proportional-font)
         (set-face-font 'variable-pitch proportional-font)
 
+        (proportional-which-key-fixer)
+
         (dolist (base proportional-monospace-after-advices)
           (ad-enable-advice base 'after 'proportional))
 
@@ -91,6 +93,8 @@ which then is enabled when proportional is enabled."
       (set-fontset-font "fontset-default" 'symbol proportional-monospace-font)
       (set-face-font 'variable-pitch proportional-monospace-font)
 
+      (proportional-which-key-fixer)
+
       (dolist (base proportional-monospace-after-advices)
         (ad-disable-advice base 'after 'proportional))
 
@@ -101,23 +105,32 @@ which then is enabled when proportional is enabled."
   (require 'use-package))
 (require 'use-package)
 
+(defun proportional-which-key-fixer ()
+  (when (and (fboundp #'which-key--init-buffer) (boundp 'which-key--buffer))
+    (if proportional-mode
+        (progn
+          (which-key--init-buffer)
+          (with-current-buffer which-key--buffer
+            (proportional-use-monospace)))
+      (when which-key--buffer
+        (kill-buffer which-key--buffer)
+        (setq which-key--buffer nil)))))
+
 (use-package which-key
   :if (package-installed-p 'which-key)
   :defer t
   :config
-  (progn
-    (which-key--init-buffer)
-    (with-current-buffer which-key--buffer
-      (proportional-use-monospace))))
+  (proportional-which-key-fixer))
 
 (use-package hydra
   :if (package-installed-p 'hydra)
   :defer t
   :config
   (defadvice lv-message (after proportional)
-    (with-current-buffer (get-buffer " *LV*")
-      (buffer-face-mode t)
-      (proportional-use-monospace)))
+    (if-let ((buf (get-buffer " *LV*")))
+        (with-current-buffer buf
+          (buffer-face-mode t)
+          (proportional-use-monospace))))
   (when proportional-mode
     (ad-enable-advice 'lv-message 'after 'proportional)))
 
