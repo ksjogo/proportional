@@ -101,10 +101,6 @@ which then is enabled when proportional is enabled."
       (dolist (hook proportional-monospace-hooks)
         (remove-hook hook 'proportional-use-monospace)))))
 
-(eval-when-compile
-  (require 'use-package))
-(require 'use-package)
-
 (defun proportional-which-key-fixer ()
   (when (and (fboundp #'which-key--init-buffer) (boundp 'which-key--buffer))
     (if proportional-mode
@@ -116,16 +112,10 @@ which then is enabled when proportional is enabled."
         (kill-buffer which-key--buffer)
         (setq which-key--buffer nil)))))
 
-(use-package which-key
-  :if (package-installed-p 'which-key)
-  :defer t
-  :config
+(with-eval-after-load 'which-key
   (proportional-which-key-fixer))
 
-(use-package hydra
-  :if (package-installed-p 'hydra)
-  :defer t
-  :config
+(with-eval-after-load 'hydra
   (defadvice lv-message (after proportional)
     (if-let ((buf (get-buffer " *LV*")))
         (with-current-buffer buf
