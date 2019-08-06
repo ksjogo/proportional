@@ -2,12 +2,12 @@
 
 ;; Author: Johannes Goslar
 ;; Created: 30 June 2016
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: faces
 ;; URL: https://github.com/ksjogo/proportional
 
-;; Copyright (C) 2016 Johannes Goslar
+;; Copyright (C) 2016 - 2019 Johannes Goslar
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@
     magit-popup-mode-hook
     magit-log-mode-hook
     which-key-init-buffer-hook
+    vterm-mode-hook
     mu4e-headers-mode-hook)
   "The list of hooks which shall be monospaced even when proportional mode is on."
   :group 'proportional
