@@ -2,12 +2,12 @@
 
 ;; Author: Johannes Goslar
 ;; Created: 30 June 2016
-;; Version: 0.1.1
+;; Version: 0.1.2
 ;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: faces
 ;; URL: https://github.com/ksjogo/proportional
 
-;; Copyright (C) 2016 - 2019 Johannes Goslar
+;; Copyright (C) 2016 - 2020 Johannes Goslar
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,13 +29,13 @@
   :group 'environment)
 
 (defcustom proportional-font
-  "DejaVu Sans-11"
+  "DejaVu Sans Light-13:style=ExtraLight"
   "Default proportional-font to activate."
   :group 'proportional
   :type 'string)
 
 (defcustom proportional-monospace-font
-  "DejaVu Sans Mono-11"
+  "DejaVu Sans Mono-13"
   "Default proportional-font to activate."
   :group 'proportional
   :type 'string)
@@ -115,6 +115,10 @@ which then is enabled when proportional is enabled."
 
 (with-eval-after-load 'which-key
   (proportional-which-key-fixer))
+
+(with-eval-after-load 'transient
+  (when proportional-mode
+    (setq transient-force-fixed-pitch t)))
 
 (with-eval-after-load 'hydra
   (defadvice lv-message (after proportional)
